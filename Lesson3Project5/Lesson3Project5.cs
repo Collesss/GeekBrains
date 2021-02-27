@@ -20,15 +20,28 @@ namespace Lesson3Project5
             Console.Write("Введите смещение массива: ");
             int offset = Convert.ToInt32(Console.ReadLine());
 
-            //bool oLOR = offset > 0; 
+            offset = (arr.Length + offset % arr.Length) % arr.Length;
 
-            for (int i = offset > 0 ? arr.Length - 1 - offset : -offset; offset > 0 ? i >= 0 : i < arr.Length; i += offset > 0 ? -1 : 1)
+            int num = arr[0];
+
+            for (int i = 0, p = 0, index = offset; i < arr.Length; i++)
             {
-                arr[i + offset] = arr[i];
-                arr[i] = 0;
+                int numNext = arr[index];
+                arr[index] = num;
+                num = numNext;
+
+                if (index == p)
+                {
+                    p++;
+                    index++;
+                    num = arr[index];
+                }
+
+                index = (index + offset) % arr.Length;
             }
 
-            Console.WriteLine("Вывод массива со смещением: ");
+            
+            Console.WriteLine("Вывод массива с круговым смещением: ");
 
             for (int i = 0; i < arr.Length; Console.WriteLine($"{i} элемент массива: {arr[i++]}"));
 
