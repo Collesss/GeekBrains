@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Lesson6Project3
 {
-    class ToDo
+    [Serializable]
+    public class ToDo
     {
         public bool IsDone;
         public string Title;
@@ -27,5 +28,7 @@ namespace Lesson6Project3
             this.Title = Title;
         }
 
+        public override string ToString() =>
+            $"[{(IsDone ? 'x' : ' ')}] {Title}";
     }
 }

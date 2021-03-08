@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Lesson6Project2
 {
@@ -34,6 +35,49 @@ namespace Lesson6Project2
 
         static void WritePath(DirectoryInfo path, TextWriter stream)
         {
+            void Write(string path, int tabs) =>
+                stream.WriteLine($"{new string('\t', tabs)}{path}");
+
+            Stack<int> positions = new Stack<int>();
+            Stack<DirectoryInfo> directoryInfos = new Stack<DirectoryInfo>();
+
+            int depthTabs = 1, curIndex = 0;
+
+            DirectoryInfo curPath = path;
+
+            do
+            {
+                if(curIndex == 0)
+                    Write(curPath.Name, depthTabs - 1);
+
+                if (curIndex < curPath.GetDirectories().Length)
+                {
+                    depthTabs++;
+                    positions.Push(curIndex + 1);
+                    directoryInfos.Push(curPath);
+                    curPath = curPath.GetDirectories()[curIndex];
+                    curIndex = 0;
+                }
+                else
+                {
+                    foreach (FileInfo fileInfo in curPath.GetFiles())
+                        Write(fileInfo.Name, depthTabs);
+
+                    if (positions.Count > 0)
+                    {
+                        curIndex = positions.Pop();
+                        curPath = directoryInfos.Pop();
+                    }
+
+                    depthTabs--;
+                }
+            }
+            while (depthTabs > 0);
+        }
+
+        /*
+        static void WritePath(DirectoryInfo path, TextWriter stream)
+        {
             int Search(DirectoryInfo[] strs, DirectoryInfo searchStr)
             {
                 for (int i = 0; i < strs.Length; i++)
@@ -56,27 +100,33 @@ namespace Lesson6Project2
                     depthTabs++;
                     path = directoryInfos[0];
                 }
-                else if (++curIndex < (directoryInfos = path.Parent.GetDirectories()).Length)
-                    path = directoryInfos[curIndex];
                 else
                 {
-                    foreach(FileInfo fileInfo in path.Parent.GetFiles())
-                        stream.WriteLine($"{new string('\t', depthTabs - 1)}{fileInfo.Name}");
+                    foreach (FileInfo fileInfo in path.GetFiles())
+                        stream.WriteLine($"{new string('\t', depthTabs)}{fileInfo.Name}");
 
-                    for (DirectoryInfo parent = path.Parent; --depthTabs > 1; parent = parent.Parent)
+                    if (++curIndex < (directoryInfos = path.Parent.GetDirectories()).Length)
+                        path = directoryInfos[curIndex];
+                    else
                     {
-                        DirectoryInfo[] parentDirs = parent.Parent.GetDirectories();
-
-                        curIndex = Search(parentDirs, parent);
-
-                        if (++curIndex < parentDirs.Length)
+                        for (DirectoryInfo parent = path.Parent; --depthTabs > 1; parent = parent.Parent)
                         {
-                            path = parentDirs[curIndex];
-                            break;
+                            foreach (FileInfo fileInfo in parent.GetFiles())
+                                stream.WriteLine($"{new string('\t', depthTabs - 1)}{fileInfo.Name}");
+
+                            DirectoryInfo[] parentDirs = parent.Parent.GetDirectories();
+
+                            curIndex = Search(parentDirs, parent);
+
+                            if (++curIndex < parentDirs.Length)
+                            {
+                                path = parentDirs[curIndex];
+                                break;
+                            }
                         }
                     }
                 }
             } while (depthTabs > 1);
-        }
+        }*/
     }
 }
