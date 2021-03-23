@@ -72,6 +72,28 @@ namespace Lesson7Project1
 
         private Symbol Check(int x, int y, Direction direction)
         {
+            int startX, startY;
+
+            startX = Math.Clamp(0, field.GetLength(1), x - Win);
+            startY = Math.Clamp(0, field.GetLength(0), y - Win);
+            
+            startX = direction == Direction.Vertical ? x : Math.Clamp(0, field.GetLength(1), x - Win);
+            
+
+            switch (direction)
+            {
+                case Direction.Horizontal:
+                    startY = y;
+                    break;
+                case Direction.Vertical:
+                    startX = x;
+                    break;
+                case Direction.DiagonalSide:
+                    startY = Math.Clamp(0, field.GetLength(0), y + Win);
+                    break;
+            }
+
+            /*
             int startX = direction switch 
             {
                 Direction.Horizontal => Math.Clamp(0, field.GetLength(1), x - Win),
@@ -88,9 +110,8 @@ namespace Lesson7Project1
                 Direction.DiagonalSide => Math.Clamp(0, field.GetLength(0), y + Win),
                 _ => 0
             };
+            */
 
-            int endX = x;
-            int endY = y;
         }
 
     }
