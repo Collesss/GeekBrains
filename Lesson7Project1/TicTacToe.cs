@@ -16,13 +16,6 @@ namespace Lesson7Project1
 
     class TicTacToe
     {
-        readonly static Dictionary<Symbol, char> symbolToChar = new Dictionary<Symbol, char>()
-        {
-            [Symbol.Empty]  = ' ',
-            [Symbol.Cross]  = 'X',
-            [Symbol.Zero]   = 'O'
-        };
-
         private enum Direction
         {
             Vertical,
@@ -37,7 +30,7 @@ namespace Lesson7Project1
 
         private Symbol[,] field;
 
-        public TicTacToe(int sizeX, int sizeY, int win)
+        public TicTacToe(int sizeX, int sizeY, int win, IShow show)
         {
             if (sizeX <= 0 || sizeY <= 0 || win <= 0 || (win > sizeX && win > sizeY))
                 throw new ArgumentException("ti eblan prover argumenti libo choto menishe 0 libo nikogda ne bydet win");
@@ -66,14 +59,24 @@ namespace Lesson7Project1
 
             field[y, x] = player;
 
+            Symbol symbol = Symbol.Error;
 
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+                if ((symbol = Check(x, y, direction)) != Symbol.Empty)
+                    break;
 
+            return symbol;
         }
 
         private Symbol Check(int x, int y, Direction direction)
         {
+            /*
             int startX = direction == Direction.Vertical ? x : Math.Clamp(0, field.GetLength(1), x - Win);
             int startY = direction == Direction.Horizontal ? y : Math.Clamp(0, field.GetLength(0), y + (direction == Direction.DiagonalSide ? Win : -Win));
+            */
+
+            int startX = direction == Direction.Vertical ? x : x - Win;
+            int startY = direction == Direction.Horizontal ? y : y + (direction == Direction.DiagonalSide ? Win : -Win);
 
             int incX = direction == Direction.Vertical ? 0 : 1;
             int incY = direction switch
@@ -83,10 +86,43 @@ namespace Lesson7Project1
                 _ => 1
             };
 
+            int score = 0;
+
+            for (int i = 1, count = 0, posLastX = startX, posLastY = startY; i < Win*2; i++, startX += incX, startY += incY)
+            {
+                try
+                {
+                    Symbol symbol = field[startY, startX];
+
+                    score += (sbyte)symbol;
+                }
+                catch (IndexOutOfRangeException) { }
+
+                if (count < Win)
+                    count++;
+                else
+                {
+                    try
+                    {
+                        Symbol symbol = field[posLastY, posLastX];
+
+                        score -= (sbyte)symbol;
+                    }
+                    catch (IndexOutOfRangeException) { }
+
+                    posLastX += incX;
+                    posLastY += incY;
+                }
+
+                if (MathF.Abs(score) == Win)
+                    break;
+            }
+
+            return score == Win ? Symbol.Cross : (score == -Win ? Symbol.Zero : Symbol.Empty);
+
+            /*
             int endX = direction == Direction.Vertical ? x : Math.Clamp(0, field.GetLength(1), x + Win);
             int endY = direction == Direction.Horizontal ? y : Math.Clamp(0, field.GetLength(0), y + (direction == Direction.DiagonalSide ? -Win : Win));
-
-
 
             int addNX = x - Win;
             int addNY = y - Win;
@@ -103,23 +139,7 @@ namespace Lesson7Project1
             {
 
             }
-
-
-            switch (direction)
-            {
-                case Direction.DiagonalMain:
-                    break;
-                case Direction.DiagonalSide:
-                    break;
-            }
-            
-
-            int posLastX = startX;
-            int posLastY = startY;
-            int count = 0;
-
-            
-
+            */
 
             /*
             int startX = direction switch 
