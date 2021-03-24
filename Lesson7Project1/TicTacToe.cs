@@ -72,26 +72,54 @@ namespace Lesson7Project1
 
         private Symbol Check(int x, int y, Direction direction)
         {
-            int startX, startY;
+            int startX = direction == Direction.Vertical ? x : Math.Clamp(0, field.GetLength(1), x - Win);
+            int startY = direction == Direction.Horizontal ? y : Math.Clamp(0, field.GetLength(0), y + (direction == Direction.DiagonalSide ? Win : -Win));
 
-            startX = Math.Clamp(0, field.GetLength(1), x - Win);
-            startY = Math.Clamp(0, field.GetLength(0), y - Win);
-            
-            startX = direction == Direction.Vertical ? x : Math.Clamp(0, field.GetLength(1), x - Win);
-            
+            int incX = direction == Direction.Vertical ? 0 : 1;
+            int incY = direction switch
+            {
+                Direction.Horizontal => 0,
+                Direction.DiagonalSide => -1,
+                _ => 1
+            };
+
+            int endX = direction == Direction.Vertical ? x : Math.Clamp(0, field.GetLength(1), x + Win);
+            int endY = direction == Direction.Horizontal ? y : Math.Clamp(0, field.GetLength(0), y + (direction == Direction.DiagonalSide ? -Win : Win));
+
+
+
+            int addNX = x - Win;
+            int addNY = y - Win;
+
+            if (addNX < 0 || addNY < 0)
+            {
+                
+            }
+
+            int addPX = x + Win;
+            int addPY = y + Win;
+
+            if (addPX >= field.GetLength(1) || addPY >= field.GetLength(0))
+            {
+
+            }
+
 
             switch (direction)
             {
-                case Direction.Horizontal:
-                    startY = y;
-                    break;
-                case Direction.Vertical:
-                    startX = x;
+                case Direction.DiagonalMain:
                     break;
                 case Direction.DiagonalSide:
-                    startY = Math.Clamp(0, field.GetLength(0), y + Win);
                     break;
             }
+            
+
+            int posLastX = startX;
+            int posLastY = startY;
+            int count = 0;
+
+            
+
 
             /*
             int startX = direction switch 
