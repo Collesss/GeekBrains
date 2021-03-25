@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Lesson7Project1
 {
-
     enum Symbol : sbyte
     {
         Cross =  1,
@@ -12,7 +11,6 @@ namespace Lesson7Project1
         Empty =  0,
         Error = sbyte.MaxValue
     }
-
 
     class TicTacToe
     {
@@ -32,10 +30,14 @@ namespace Lesson7Project1
 
         private IShow show;
 
+        private Symbol result;
+
         public TicTacToe(int sizeX, int sizeY, int win, IShow show)
         {
             if (sizeX <= 0 || sizeY <= 0 || win <= 0 || (win > sizeX && win > sizeY))
                 throw new ArgumentException("ti eblan prover argumenti libo choto menishe 0 libo nikogda ne bydet win");
+
+            result = Symbol.Empty;
 
             this.show = show;
 
@@ -57,9 +59,11 @@ namespace Lesson7Project1
                     field[y, x] = Symbol.Empty;
         }
 
-
         public Symbol Move(Symbol player, int x, int y)
         {
+            if (result != Symbol.Empty)
+                return result;
+
             if (!(Math.InRange(0, field.GetLength(0), y) && Math.InRange(0, field.GetLength(1), x)) || ((int)(player & (Symbol.Cross | Symbol.Zero))) == 0 || field[y, x] != Symbol.Empty)
                 return Symbol.Error;
 
@@ -67,13 +71,11 @@ namespace Lesson7Project1
 
             show.Show(field);
 
-            Symbol symbol = Symbol.Error;
-
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
-                if ((symbol = Check(x, y, direction)) != Symbol.Empty)
+                if ((result = Check(x, y, direction)) != Symbol.Empty)
                     break;
 
-            return symbol;
+            return result;
         }
 
         private Symbol Check(int x, int y, Direction direction)
@@ -135,7 +137,6 @@ namespace Lesson7Project1
 
             if (addNX < 0 || addNY < 0)
             {
-                
             }
 
             int addPX = x + Win;
@@ -143,11 +144,8 @@ namespace Lesson7Project1
 
             if (addPX >= field.GetLength(1) || addPY >= field.GetLength(0))
             {
-
             }
-            */
 
-            /*
             int startX = direction switch 
             {
                 Direction.Horizontal => Math.Clamp(0, field.GetLength(1), x - Win),
@@ -165,8 +163,6 @@ namespace Lesson7Project1
                 _ => 0
             };
             */
-
         }
-
     }
 }
