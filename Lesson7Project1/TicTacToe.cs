@@ -30,10 +30,14 @@ namespace Lesson7Project1
 
         private Symbol[,] field;
 
+        private IShow show;
+
         public TicTacToe(int sizeX, int sizeY, int win, IShow show)
         {
             if (sizeX <= 0 || sizeY <= 0 || win <= 0 || (win > sizeX && win > sizeY))
                 throw new ArgumentException("ti eblan prover argumenti libo choto menishe 0 libo nikogda ne bydet win");
+
+            this.show = show;
 
             SizeX = sizeX;
             SizeY = sizeY;
@@ -42,6 +46,8 @@ namespace Lesson7Project1
             field = new Symbol[sizeY, sizeX];
 
             Clear();
+
+            show.Show(field);
         }
 
         private void Clear()
@@ -59,6 +65,8 @@ namespace Lesson7Project1
 
             field[y, x] = player;
 
+            show.Show(field);
+
             Symbol symbol = Symbol.Error;
 
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
@@ -75,8 +83,8 @@ namespace Lesson7Project1
             int startY = direction == Direction.Horizontal ? y : Math.Clamp(0, field.GetLength(0), y + (direction == Direction.DiagonalSide ? Win : -Win));
             */
 
-            int startX = direction == Direction.Vertical ? x : x - Win;
-            int startY = direction == Direction.Horizontal ? y : y + (direction == Direction.DiagonalSide ? Win : -Win);
+            int startX = direction == Direction.Vertical ? x : x - (Win - 1);
+            int startY = direction == Direction.Horizontal ? y : y + (direction == Direction.DiagonalSide ? (Win - 1) : -(Win - 1));
 
             int incX = direction == Direction.Vertical ? 0 : 1;
             int incY = direction switch
@@ -88,7 +96,7 @@ namespace Lesson7Project1
 
             int score = 0;
 
-            for (int i = 1, count = 0, posLastX = startX, posLastY = startY; i < Win*2; i++, startX += incX, startY += incY)
+            for (int i = 1, posLastX = startX, posLastY = startY; i < Win*2; i++, startX += incX, startY += incY)
             {
                 try
                 {
@@ -98,9 +106,7 @@ namespace Lesson7Project1
                 }
                 catch (IndexOutOfRangeException) { }
 
-                if (count < Win)
-                    count++;
-                else
+                if (Win < i)
                 {
                     try
                     {
