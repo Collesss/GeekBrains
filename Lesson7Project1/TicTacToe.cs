@@ -64,7 +64,7 @@ namespace Lesson7Project1
             if (result != Symbol.Empty)
                 return result;
 
-            if (!(Math.InRange(0, field.GetLength(0), y) && Math.InRange(0, field.GetLength(1), x)) || ((int)(player & (Symbol.Cross | Symbol.Zero))) == 0 || field[y, x] != Symbol.Empty)
+            if (!(Math.InRange(0, field.GetLength(0) - 1, y) && Math.InRange(0, field.GetLength(1) - 1, x)) || ((int)(player & (Symbol.Cross | Symbol.Zero))) == 0 || field[y, x] != Symbol.Empty)
                 return Symbol.Error;
 
             field[y, x] = player;

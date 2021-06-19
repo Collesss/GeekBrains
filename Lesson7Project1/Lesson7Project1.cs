@@ -65,6 +65,10 @@ namespace Lesson7Project1
 
                     break;
                 }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Ошибка формата.");
+                }
                 catch (InvalidCastException)
                 {
                     Console.WriteLine("Ошибка преобразования.");
@@ -92,6 +96,10 @@ namespace Lesson7Project1
                     ticTacToe = new TicTacToe(x, y, size, showConsole);
 
                     break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Ошибка формата.");
                 }
                 catch (InvalidCastException)
                 {

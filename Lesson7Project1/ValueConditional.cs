@@ -38,8 +38,11 @@ namespace Lesson7Project1
             V retVal = @default;
 
             foreach (Check<T, V> check in checks)
-                if (check(data, out retVal))
+                if (check(data, out V outRetVal))
+                {
+                    retVal = outRetVal;
                     break;
+                }
 
             return retVal;
         }
