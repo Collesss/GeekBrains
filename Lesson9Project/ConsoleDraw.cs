@@ -13,7 +13,6 @@ namespace Lesson9Project
             [Direction.Vertical] = '\u2502'
         };
 
-        
 
         public static void DrawRectangle1(int x, int y, int sizeX, int sizeY)
         {
@@ -48,9 +47,13 @@ namespace Lesson9Project
 
         }
 
-        public static void DrawLine(int x, int y, Direction direction, int size)
+        public static void DrawLine(int x, int y, Direction direction, int size) =>
+            DrawLine(x, y, direction, size, charTo[direction]);
+
+
+        public static void DrawLine(int x, int y, Direction direction, int size, char @char)
         {
-            int startPosVal = direction switch 
+            int startPosVal = direction switch
             {
                 Direction.Vertical => y,
                 Direction.Horizontal => x
@@ -66,7 +69,7 @@ namespace Lesson9Project
                     Direction.Vertical => (x, startPosVal)
                 };
 
-                DrawChar(cx, cy, charTo[direction]);
+                DrawChar(cx, cy, @char);
             }
         }
 
@@ -83,14 +86,16 @@ namespace Lesson9Project
                 Console.SetCursorPosition(x, y);
         }
 
-        public static void ClearCell(int x, int y) 
+        public static void ClearLine(int x, int y, Direction direction, int size)
         {
-            if (x < 0 || x > Console.WindowWidth - 1 || y < 0 || y > Console.WindowHeight - 1)
-                return;
-            DrawChar(x, y, ' ');
+            DrawLine(x, y, direction, size, ' ');
 
-            Console.SetCursorPosition(x, y);
+            if (x > 0 && x < Console.WindowWidth && y > 0 && y < Console.WindowHeight)
+                Console.SetCursorPosition(x, y);
         }
+
+        public static void ClearCell(int x, int y) =>
+            DrawChar(x, y, ' ', false);
 
         public static void DrawCharColor(int x, int y, char c, ConsoleColor color)
         {

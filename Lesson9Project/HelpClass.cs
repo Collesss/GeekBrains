@@ -21,5 +21,9 @@ namespace Lesson9Project
         }
 
         public static int ToZero(int val) => val - Math.Sign(val);
+
+        public static bool InRange(int val, int min, int max) => val >= min && val <= max;
+
+        public static bool IsArrow(ConsoleKey key) => InRange((int)key, 37, 40);
     }
 }
