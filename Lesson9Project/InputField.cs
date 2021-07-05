@@ -43,6 +43,7 @@ namespace Lesson9Project
                             if (posCursorField > 0)
                             {
                                 posCursorField--;
+                                posCursorBuffer--;
                                 Console.SetCursorPosition(posLeft + posCursorField, posTop);
                             }
                             break;
@@ -62,37 +63,35 @@ namespace Lesson9Project
                 }
                 else if (pressKey.Key == ConsoleKey.Backspace && buffer.Length > 0)
                 {
-                    if (buffer.Length <= width)
+                    if (buffer.Length < width)
                     {
-                        ConsoleDraw.ClearCell(Console.CursorLeft - (buffer.Length == width ? 0 : 1), posTop);
-
-                        if (buffer.Length != width)
-                            posCursorField--;
+                        ConsoleDraw.ClearCell(Console.CursorLeft - 1, posTop);
+                        posCursorField--;
                     }
                     else
                     {
-                        Console.MoveBufferArea(posLeft, posTop, width - 1, 1, posLeft + 1, posTop);
-                        ConsoleDraw.DrawChar(posLeft, posTop, buffer[buffer.Length - 15], false);
+                        Console.MoveBufferArea(posLeft, posTop, width - 2, 1, posLeft + 1, posTop);
+                        ConsoleDraw.DrawChar(posLeft, posTop, buffer[buffer.Length - width]);
                         Console.SetCursorPosition(posLeft + width - 1, posTop);
                     }
 
+                    posCursorBuffer--;
                     buffer.Remove(buffer.Length - 1, 1);
                 }
                 else if (pressKey.Key != ConsoleKey.Backspace)
                 {
                     buffer.Append(pressKey.KeyChar);
+                    posCursorBuffer++;
 
-                    if (buffer.Length <= width)
+                    if (buffer.Length < width)
                     {
-                        ConsoleDraw.DrawChar(Console.CursorLeft, posTop, pressKey.KeyChar, buffer.Length != width);
-
-                        if (buffer.Length != width)
-                            posCursorField++;
+                        ConsoleDraw.DrawChar(Console.CursorLeft, posTop, pressKey.KeyChar);
+                        posCursorField++;
                     }
                     else
                     {
-                        Console.MoveBufferArea(posLeft + 1, posTop, width - 1, 1, posLeft, posTop);
                         ConsoleDraw.DrawChar(Console.CursorLeft, posTop, pressKey.KeyChar, false);
+                        Console.MoveBufferArea(posLeft + 1, posTop, width - 1, 1, posLeft, posTop);
                     }
                 }
             }
